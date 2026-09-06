@@ -983,20 +983,25 @@ function renderProdGrid(){
   });
 }
 
-document.querySelectorAll('button,a,[tabindex]').forEach(el=>{
-  el.addEventListener('mouseenter',()=>ring.classList.add('hovered'));
-  el.addEventListener('mouseleave',()=>ring.classList.remove('hovered'));
-});
+
 
 /* HEADER */
 const hdr=document.getElementById('site-header');
 window.addEventListener('scroll',()=>{hdr.classList.toggle('scrolled',scrollY>80)},{passive:true});
 
 /* REVEAL */
-new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')})},{threshold:.1,rootMargin:'0px 0px -40px 0px'})
-  .observe.bind(new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')})},{threshold:.1,rootMargin:'0px 0px -40px 0px'}));
 
-(()=>{const obs=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')})},{threshold:.1,rootMargin:'0px 0px -40px 0px'});document.querySelectorAll('.rv').forEach(el=>obs.observe(el))})();
+
+let rvObs;
+(()=>{
+  rvObs = new IntersectionObserver((es)=>{
+    es.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('in'); });
+  },{threshold:.1, rootMargin:'0px 0px -40px 0px'});
+  document.querySelectorAll('.rv').forEach(el=>rvObs.observe(el));
+})();
+
+/* CARREGAR PRODUTOS DO LOCALSTORAGE */
+loadProdsFromStorage();
 
 /* CART */
 const cartOv=document.getElementById('cart-ov');
@@ -1005,7 +1010,7 @@ document.getElementById('cart-close').addEventListener('click',closeCart);
 cartOv.addEventListener('click',e=>{if(e.target===cartOv)closeCart()});
 function closeCart(){cartOv.classList.remove('open');document.body.style.overflow=''}
 
-function addToCart(name, price, img){
+function addToCart(name, price, priceNum, img){
   // Verifica estoque (busca no array de produtos se disponível)
   const prod = typeof produtos !== 'undefined' ? produtos.find(p => p.nome === name) : null;
   if(prod && prod.estoque !== undefined && prod.estoque <= 0){
@@ -1021,8 +1026,8 @@ function addToCart(name, price, img){
     }
     ex.qty++;
   } else {
-    const priceNum = parseFloat(String(price).replace(/[^\d,]/g,'').replace(',','.')) || 0;
-    cart.items.push({name, price, priceNum, qty:1, img: img || null});
+    const pNum = priceNum || parseFloat(String(price).replace(/[^\d,]/g,'').replace(',','.')) || 0;
+    cart.items.push({name, price, priceNum: pNum, qty:1, img: img || null});
   }
   // Desconta do estoque local
   if(prod && prod.estoque !== undefined) prod.estoque--;

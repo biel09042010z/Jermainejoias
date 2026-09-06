@@ -216,6 +216,17 @@
 
     /* ── EMPTY STATE ────────────────────────────────── */
     .empty { text-align: center; padding: 48px 20px; color: var(--muted); font-size: .9rem; }
+
+    /* ── VITRINE (categorias + galeria) ────────────── */
+    .vitrine-wrap { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; }
+    .vitrine-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 10px; text-align: center; }
+    .vitrine-thumb { width: 100%; aspect-ratio: 3/4; border-radius: 8px; background: var(--surface); overflow: hidden; display: grid; place-items: center; margin-bottom: 8px; }
+    .vitrine-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .vitrine-thumb span { font-size: .75rem; color: var(--muted); font-weight: 600; }
+    .vitrine-label { font-size: .75rem; font-weight: 600; margin-bottom: 8px; }
+    .vitrine-actions { display: flex; flex-direction: column; gap: 4px; }
+    .vitrine-actions .btn-ghost { padding: 6px 10px; font-size: .72rem; width: 100%; }
+    .vitrine-actions .btn-icon { font-size: .7rem; }
     .empty-icon { font-size: 2.5rem; margin-bottom: 10px; }
 
     /* ── RESPONSIVE ─────────────────────────────────── */
@@ -261,6 +272,7 @@
   <!-- TABS -->
   <nav class="tabs-bar" aria-label="Seções do painel">
     <button class="tab-btn active" onclick="switchTab('produtos', this)">💍 Peças</button>
+    <button class="tab-btn" onclick="switchTab('vitrine', this)">🖼 Vitrine</button>
     <button class="tab-btn" onclick="switchTab('pedidos', this)">🛍 Pedidos</button>
   </nav>
 
@@ -375,6 +387,20 @@
       </div>
     </section>
 
+    <!-- ─── VITRINE (categorias + galeria) ───────── -->
+    <section class="tab-panel" id="tab-vitrine">
+      <h2 class="section-title">🖼 Vitrine da <span>Home</span></h2>
+      <p style="color:var(--muted);font-size:.85rem;margin-bottom:20px;">
+        Fotos usadas nos cards de categoria e na galeria da página inicial. Use imagens leves (até 900KB cada).
+      </p>
+
+      <h3 style="font-size:.95rem;margin-bottom:10px;">Categorias</h3>
+      <div class="vitrine-wrap" id="categoriasGrid" style="margin-bottom:32px"></div>
+
+      <h3 style="font-size:.95rem;margin-bottom:10px;">Galeria (Instagram)</h3>
+      <div class="vitrine-wrap" id="galeriaGrid"></div>
+    </section>
+
     <!-- ─── PEDIDOS ──────────────────────────────── -->
     <section class="tab-panel" id="tab-pedidos">
       <h2 class="section-title">🛍 <span>Pedidos</span></h2>
@@ -393,8 +419,21 @@
 
 <script>
 /* ══ STORAGE — sem servidor, tudo no localStorage ════ */
-const KEY_PRODS   = 'jj_produtos';
-const KEY_PEDIDOS = 'jj_pedidos';
+const KEY_PRODS      = 'jj_produtos';
+const KEY_PEDIDOS    = 'jj_pedidos';
+const KEY_CATEGORIAS = 'jj_categorias'; // { slug: dataURL }
+const KEY_GALERIA    = 'jj_galeria';    // [dataURL, dataURL, ...] 6 posições
+
+const CATEGORIAS = [
+  { slug: 'aneis',       nome: 'Anéis' },
+  { slug: 'colares',     nome: 'Colares' },
+  { slug: 'brincos',     nome: 'Brincos' },
+  { slug: 'pulseiras',   nome: 'Pulseiras' },
+  { slug: 'conjuntos',   nome: 'Conjuntos' },
+  { slug: 'lancamentos', nome: 'Lançamentos' },
+];
+
+const MAX_IMG_BYTES = 900 * 1024; // ~900KB por foto (categorias/galeria)
 
 /* Credenciais — altere aqui se necessário */
 const CREDS = {
@@ -470,6 +509,7 @@ function switchTab(name, btn) {
   document.getElementById('tab-' + name).classList.add('active');
   btn.classList.add('active');
   if (name === 'pedidos') renderPedidos();
+  if (name === 'vitrine') loadVitrine();
 }
 
 /* ══ INIT ══════════════════════════════════════════ */
@@ -517,6 +557,98 @@ function handleImagePick(input) {
     document.getElementById('pImagemPreview').style.display = 'block';
   };
   reader.readAsDataURL(file);
+}
+
+/* ══ VITRINE — categorias e galeria (home) ═════════ */
+function loadVitrine() {
+  renderCategoriasForm();
+  renderGaleriaForm();
+}
+
+function renderCategoriasForm() {
+  const imgs = JSON.parse(localStorage.getItem(KEY_CATEGORIAS) || '{}');
+  const el = document.getElementById('categoriasGrid');
+  el.innerHTML = CATEGORIAS.map(c => `
+    <div class="vitrine-card">
+      <div class="vitrine-thumb">${imgs[c.slug] ? `<img src="${imgs[c.slug]}" alt="${c.nome}">` : `<span>${c.nome}</span>`}</div>
+      <p class="vitrine-label">${c.nome}</p>
+      <input type="file" accept="image/*" style="display:none" id="cat-file-${c.slug}" onchange="handleCategoriaFile('${c.slug}', this)" />
+      <div class="vitrine-actions">
+        <button class="btn-ghost" onclick="document.getElementById('cat-file-${c.slug}').click()">Trocar foto</button>
+        ${imgs[c.slug] ? `<button class="btn-icon btn-delete" onclick="removeCategoriaImg('${c.slug}')">🗑 Remover</button>` : ''}
+      </div>
+    </div>
+  `).join('');
+}
+
+function handleCategoriaFile(slug, input) {
+  const file = input.files[0];
+  if (!file) return;
+  if (file.size > MAX_IMG_BYTES) { showToast('⚠️ Use uma imagem menor que 900KB.'); input.value = ''; return; }
+  const reader = new FileReader();
+  reader.onload = e => {
+    const imgs = JSON.parse(localStorage.getItem(KEY_CATEGORIAS) || '{}');
+    imgs[slug] = e.target.result;
+    try {
+      localStorage.setItem(KEY_CATEGORIAS, JSON.stringify(imgs));
+      renderCategoriasForm();
+      showToast('✅ Imagem da categoria salva!');
+    } catch (err) {
+      showToast('⚠️ Sem espaço de armazenamento. Use fotos menores.');
+    }
+  };
+  reader.readAsDataURL(file);
+}
+
+function removeCategoriaImg(slug) {
+  const imgs = JSON.parse(localStorage.getItem(KEY_CATEGORIAS) || '{}');
+  delete imgs[slug];
+  localStorage.setItem(KEY_CATEGORIAS, JSON.stringify(imgs));
+  renderCategoriasForm();
+  showToast('🗑 Imagem removida.');
+}
+
+function renderGaleriaForm() {
+  const imgs = JSON.parse(localStorage.getItem(KEY_GALERIA) || '[]');
+  const el = document.getElementById('galeriaGrid');
+  el.innerHTML = Array.from({ length: 6 }).map((_, i) => `
+    <div class="vitrine-card">
+      <div class="vitrine-thumb">${imgs[i] ? `<img src="${imgs[i]}" alt="Vitrine ${i + 1}">` : `<span>#${i + 1}</span>`}</div>
+      <p class="vitrine-label">Foto ${i + 1}</p>
+      <input type="file" accept="image/*" style="display:none" id="gal-file-${i}" onchange="handleGaleriaFile(${i}, this)" />
+      <div class="vitrine-actions">
+        <button class="btn-ghost" onclick="document.getElementById('gal-file-${i}').click()">Trocar foto</button>
+        ${imgs[i] ? `<button class="btn-icon btn-delete" onclick="removeGaleriaImg(${i})">🗑 Remover</button>` : ''}
+      </div>
+    </div>
+  `).join('');
+}
+
+function handleGaleriaFile(i, input) {
+  const file = input.files[0];
+  if (!file) return;
+  if (file.size > MAX_IMG_BYTES) { showToast('⚠️ Use uma imagem menor que 900KB.'); input.value = ''; return; }
+  const reader = new FileReader();
+  reader.onload = e => {
+    const imgs = JSON.parse(localStorage.getItem(KEY_GALERIA) || '[]');
+    imgs[i] = e.target.result;
+    try {
+      localStorage.setItem(KEY_GALERIA, JSON.stringify(imgs));
+      renderGaleriaForm();
+      showToast('✅ Foto da galeria salva!');
+    } catch (err) {
+      showToast('⚠️ Sem espaço de armazenamento. Use fotos menores.');
+    }
+  };
+  reader.readAsDataURL(file);
+}
+
+function removeGaleriaImg(i) {
+  const imgs = JSON.parse(localStorage.getItem(KEY_GALERIA) || '[]');
+  imgs[i] = null;
+  localStorage.setItem(KEY_GALERIA, JSON.stringify(imgs));
+  renderGaleriaForm();
+  showToast('🗑 Foto removida.');
 }
 
 function saveProduto() {

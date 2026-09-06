@@ -750,18 +750,16 @@ footer{background:var(--ow);border-top:1px solid var(--gl);padding-block:clamp(3
   animation:shimmer 3s linear infinite;
 }
 
-/* LOGO — sempre visível */
+/* LOGO — sempre visível, cor sólida (sem gradient-clip, sem depender de fonte externa) */
 .hlogo{
-  font-family:var(--serif);font-size:1.15rem;font-weight:400;
+  font-family:var(--serif),Georgia,serif;font-size:1.15rem;font-weight:500;
   letter-spacing:.18em;text-transform:uppercase;white-space:nowrap;
-  color:var(--cl);
-  text-shadow:0 0 40px rgba(201,170,124,.3);
+  color:var(--cl)!important;opacity:1!important;
+  text-shadow:0 1px 3px rgba(0,0,0,.4);
   transition:color var(--trans),text-shadow var(--trans);
-  -webkit-text-fill-color:var(--cl);
 }
 .site-header.scrolled .hlogo{
-  color:var(--bk);
-  -webkit-text-fill-color:var(--bk);
+  color:var(--bk)!important;
   text-shadow:none;
 }
 </style>
@@ -972,86 +970,8 @@ footer{background:var(--ow);border-top:1px solid var(--gl);padding-block:clamp(3
       <h2 id="prod-title" class="tt">Peças em destaque.</h2>
     </div>
   </div>
-  <div class="pgrid con" role="list" style="border-top:1px solid var(--gl);border-left:1px solid var(--gl)">
-
-    <article class="pc rv" role="listitem">
-      <div class="pc-img">
-        <div class="pc-art" style="background:linear-gradient(145deg,#ede8e0 0%,#ddd4c4 35%,#e8e0d0 65%,#f0ece4 100%);box-shadow:inset 0 0 80px rgba(201,170,124,.12)"></div>
-        <div class="pc-hover">
-          <button class="pc-quick" onclick="openModal(0)">Ver detalhes</button>
-        </div>
-        <span class="pc-tag">Bestseller</span>
-      </div>
-      <div class="pc-info">
-        <div class="pc-stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star" style="color:var(--gl)">★</span></div>
-        <h3 class="pc-name">Anel Aurora</h3>
-        <p class="pc-mat">Ouro 18k · Diamante central</p>
-        <p class="pc-price">R$ 4.890,00</p>
-      </div>
-      <div class="pc-actions">
-        <button class="pc-cart" onclick="addToCart('Anel Aurora','R$ 4.890,00')">Adicionar à sacola</button>
-        <button class="pc-wish" aria-label="Favoritar"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M8 14S1 9.5 1 5a3.5 3.5 0 0 1 7 0 3.5 3.5 0 0 1 7 0c0 4.5-7 9-7 9z"/></svg></button>
-      </div>
-    </article>
-
-    <article class="pc rv rv1" role="listitem">
-      <div class="pc-img">
-        <div class="pc-art" style="background:linear-gradient(145deg,#ede8e0 0%,#d4c8b4 35%,#e8e0d4 65%,#ede6da 100%);box-shadow:inset 0 0 80px rgba(201,170,124,.12)"></div>
-        <div class="pc-hover"><button class="pc-quick" onclick="openModal(1)">Ver detalhes</button></div>
-        <span class="pc-tag" style="background:var(--ch);color:var(--bk)">Oferta</span>
-      </div>
-      <div class="pc-info">
-        <div class="pc-stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span></div>
-        <h3 class="pc-name">Colar Lumière</h3>
-        <p class="pc-mat">Ouro rose 18k · Safira oval</p>
-        <p class="pc-price"><del>R$ 6.200,00</del> R$ 5.490,00</p>
-      </div>
-      <div class="pc-actions">
-        <button class="pc-cart" onclick="addToCart('Colar Lumière','R$ 5.490,00')">Adicionar à sacola</button>
-        <button class="pc-wish" aria-label="Favoritar"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M8 14S1 9.5 1 5a3.5 3.5 0 0 1 7 0 3.5 3.5 0 0 1 7 0c0 4.5-7 9-7 9z"/></svg></button>
-      </div>
-    </article>
-
-    <article class="pc rv rv2" role="listitem">
-      <div class="pc-img">
-        <div class="pc-art" style="background:linear-gradient(145deg,#ede8e0 0%,#d4c8b4 35%,#e8e0d4 65%,#ede6da 100%);box-shadow:inset 0 0 80px rgba(201,170,124,.12)"></div>
-        <div class="pc-hover"><button class="pc-quick" onclick="openModal(2)">Ver detalhes</button></div>
-      </div>
-      <div class="pc-info">
-        <div class="pc-stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span></div>
-        <h3 class="pc-name">Brincos Velvet</h3>
-        <p class="pc-mat">Prata 950 · Pérola cultivada</p>
-        <p class="pc-price">R$ 2.190,00</p>
-      </div>
-      <div class="pc-actions">
-        <button class="pc-cart" onclick="addToCart('Brincos Velvet','R$ 2.190,00')">Adicionar à sacola</button>
-        <button class="pc-wish" aria-label="Favoritar"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M8 14S1 9.5 1 5a3.5 3.5 0 0 1 7 0 3.5 3.5 0 0 1 7 0c0 4.5-7 9-7 9z"/></svg></button>
-      </div>
-    </article>
-
-    <article class="pc rv rv3" role="listitem">
-      <div class="pc-img">
-        <div class="pc-art" style="background:linear-gradient(145deg,#ede8e0,#d4c8b4)">
-          <svg width="120" height="120" viewBox="0 0 120 120" fill="none" stroke="rgba(201,170,124,.55)" stroke-width=".8">
-            <ellipse cx="60" cy="60" rx="48" ry="18" stroke-dasharray="5 3"/>
-            <ellipse cx="60" cy="60" rx="34" ry="12"/>
-            <circle cx="108" cy="60" r="7" fill="rgba(201,170,124,.35)" stroke="rgba(201,170,124,.8)" stroke-width=".7"/>
-          </svg>
-        </div>
-        <div class="pc-hover"><button class="pc-quick" onclick="openModal(3)">Ver detalhes</button></div>
-        <span class="pc-tag">Novo</span>
-      </div>
-      <div class="pc-info">
-        <div class="pc-stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star" style="color:var(--gl)">★</span></div>
-        <h3 class="pc-name">Pulseira Serenity</h3>
-        <p class="pc-mat">Ouro 18k · 18 Diamantes</p>
-        <p class="pc-price">R$ 7.340,00</p>
-      </div>
-      <div class="pc-actions">
-        <button class="pc-cart" onclick="addToCart('Pulseira Serenity','R$ 7.340,00')">Adicionar à sacola</button>
-        <button class="pc-wish" aria-label="Favoritar"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M8 14S1 9.5 1 5a3.5 3.5 0 0 1 7 0 3.5 3.5 0 0 1 7 0c0 4.5-7 9-7 9z"/></svg></button>
-      </div>
-    </article>
+  <div class="pgrid con" role="list" id="pgrid" style="border-top:1px solid var(--gl);border-left:1px solid var(--gl)">
+    <p style="padding:40px 8px;color:var(--gm)">Carregando peças...</p>
   </div>
 </section>
 
@@ -1134,57 +1054,14 @@ footer{background:var(--ow);border-top:1px solid var(--gl);padding-block:clamp(3
       <div class="fc"><h4>Atendimento</h4><ul><li><a href="#">WhatsApp</a></li><li><a href="#">E-mail</a></li><li><a href="#">Troca e Devolução</a></li><li><a href="#">Privacidade</a></li><li><a href="#">Termos de Uso</a></li></ul></div>
     </div>
     <div class="fbot" style="position:relative">
-  <button onclick="openAdmin()" title="Acesso administrativo" aria-label="Painel administrativo" style="position:absolute;bottom:0;right:0;width:28px;height:28px;background:transparent;border:none;cursor:pointer;color:var(--gl);display:flex;align-items:center;justify-content:center;transition:color .3s ease,transform .3s ease;border-radius:50%" onmouseover="this.style.color='var(--ch)';this.style.transform='scale(1.2)'" onmouseout="this.style.color='var(--gl)';this.style.transform='scale(1)'">
-    <svg width="13" height="13" viewBox="0 0 14 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="2" y="7" width="10" height="8" rx="2"/><path d="M4.5 7V5a2.5 2.5 0 0 1 5 0v2"/><circle cx="7" cy="11.5" r="1" fill="currentColor" stroke="none"/></svg>
-  </button>
       <p>© 2025 Jermaine Joias. Todos os direitos reservados.</p>
       <nav aria-label="Links legais"><a href="#">Privacidade</a><a href="#">Termos</a><a href="#">Cookies</a></nav>
-      <button onclick="document.getElementById('admin-ov').classList.add('open')" aria-label="Painel administrativo" style="background:none;border:none;cursor:pointer;color:var(--gl);opacity:.4;transition:opacity .3s;padding:4px" onmouseenter="this.style.opacity='.9'" onmouseleave="this.style.opacity='.4'">
+      <a href="/admin.html" title="Acesso administrativo" aria-label="Painel administrativo" style="background:none;border:none;cursor:pointer;color:var(--gl);opacity:.4;transition:opacity .3s;padding:4px;display:inline-flex" onmouseenter="this.style.opacity='.9'" onmouseleave="this.style.opacity='.4'">
         <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.1"><rect x="2" y="5.5" width="9" height="7" rx="1.5"/><path d="M4 5.5V4a2.5 2.5 0 0 1 5 0v1.5"/><circle cx="6.5" cy="9" r=".9" fill="currentColor" stroke="none"/></svg>
-      </button>
+      </a>
     </div>
   </div>
 </footer>
-
-<!-- ADMIN LOGIN -->
-<div id="admin-ov" style="position:fixed;inset:0;background:rgba(14,14,12,.7);z-index:400;display:none;align-items:center;justify-content:center;backdrop-filter:blur(6px)" onclick="if(event.target===this)this.classList.remove('open')">
-  <div style="background:var(--w);width:min(360px,90%);padding:40px 36px;border-radius:12px;position:relative">
-    <button onclick="document.getElementById('admin-ov').classList.remove('open')" style="position:absolute;top:16px;right:16px;background:none;border:none;cursor:pointer;color:var(--gm);font-size:18px;line-height:1">×</button>
-    <div style="text-align:center;margin-bottom:28px">
-      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="var(--ch)" stroke-width="1.2" style="margin:0 auto 12px"><rect x="5" y="14" width="22" height="16" rx="3"/><path d="M10 14v-4a6 6 0 0 1 12 0v4"/><circle cx="16" cy="22" r="2" fill="var(--ch)" stroke="none"/></svg>
-      <p style="font-family:var(--serif);font-size:1.2rem;font-weight:300;color:var(--bk)">Painel Administrativo</p>
-      <p style="font-size:11px;color:var(--gm);margin-top:4px;letter-spacing:.06em">Acesso restrito</p>
-    </div>
-    <div style="display:flex;flex-direction:column;gap:14px">
-      <input id="admin-user" type="email" placeholder="E-mail" style="width:100%;padding:12px 16px;border:1px solid var(--gl);border-radius:6px;font-family:var(--sans);font-size:13px;outline:none;background:var(--w);color:var(--bk);transition:border-color .3s" onfocus="this.style.borderColor='var(--ch)'" onblur="this.style.borderColor='var(--gl)'">
-      <input id="admin-pass" type="password" placeholder="Senha" style="width:100%;padding:12px 16px;border:1px solid var(--gl);border-radius:6px;font-family:var(--sans);font-size:13px;outline:none;background:var(--w);color:var(--bk);transition:border-color .3s" onfocus="this.style.borderColor='var(--ch)'" onblur="this.style.borderColor='var(--gl)'" onkeydown="if(event.key==='Enter')adminLogin()">
-      <button onclick="adminLogin()" style="width:100%;padding:13px;background:var(--bk);color:var(--w);border:none;border-radius:6px;font-family:var(--sans);font-size:10px;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;transition:background .3s" onmouseenter="this.style.background='var(--ci)'" onmouseleave="this.style.background='var(--bk)'">Entrar</button>
-      <p id="admin-err" style="text-align:center;font-size:11px;color:#c0392b;display:none">Usuário ou senha incorretos.</p>
-    </div>
-  </div>
-</div>
-
-<style>
-#admin-ov{display:none}
-#admin-ov.open{display:flex}
-</style>
-
-<script>
-function adminLogin(){
-  const u=document.getElementById('admin-user').value;
-  const p=document.getElementById('admin-pass').value;
-  const err=document.getElementById('admin-err');
-  if(u==='joaogabrielsantoshilario05@gmail.com'&&p==='09042010'){
-    err.style.display='none';
-    document.getElementById('admin-ov').classList.remove('open');
-    toast('Bem-vindo ao painel!');
-  } else {
-    err.style.display='block';
-    document.getElementById('admin-pass').value='';
-    document.getElementById('admin-pass').focus();
-  }
-}
-</script>
 
 <!-- CART -->
 <div class="cart-ov" id="cart-ov" role="dialog" aria-modal="true" aria-label="Sacola de compras">
@@ -1203,7 +1080,7 @@ function adminLogin(){
     </div>
     <div class="cart-ft" id="cart-ft" style="display:none">
       <div class="cart-tot"><span>Total</span><strong id="cart-total">—</strong></div>
-      <button class="btn-ck">Finalizar compra</button>
+      <button class="btn-ck" onclick="checkout()">Finalizar compra</button>
     </div>
   </div>
 </div>
@@ -1314,15 +1191,9 @@ function animateCount(el){
   requestAnimationFrame(step);
 }
 
-/* DATA */
-const prods=[
-  {name:'Anel Aurora',cat:'Anéis',price:'R$ 4.890,00',rating:4,desc:'Ouro 18k polido com diamante central lapidação brilhante, delicado e atemporal.',mat:'Ouro 18k (750) com diamante natural 0,25ct certificado GIA.',dim:'Largura do aro: 2mm. Tamanhos: 12–22.',care:'Evite produtos químicos, perfumes e água salgada.',warranty:'Garantia de 12 meses contra defeitos de fabricação.',delivery:'Entrega 2–5 dias úteis. Frete grátis acima de R$ 1.000.',sizes:['12','14','16','18','20','22'],bg:'linear-gradient(145deg,#1a1814,#2c2820)',svg:`<svg width="140" height="140" viewBox="0 0 140 140" fill="none" stroke="rgba(201,170,124,.55)" stroke-width=".8"><circle cx="70" cy="70" r="55" stroke-dasharray="5 3"/><circle cx="70" cy="70" r="36"/><circle cx="70" cy="15" r="11" fill="rgba(201,170,124,.4)" stroke="rgba(201,170,124,.9)" stroke-width=".7"/></svg>`},
-  {name:'Colar Lumière',cat:'Colares',price:'R$ 5.490,00',rating:5,desc:'Ouro rose 18k com corrente veneziana ultrafina e pingente de safira oval.',mat:'Ouro rose 18k (750) com safira natural oval 1,5ct.',dim:'Comprimento: 45cm + extensor 5cm. Pingente: 18×12mm.',care:'Limpe com pano de microfibra seco.',warranty:'Garantia 12 meses.',delivery:'Entrega 2–5 dias úteis.',sizes:null,bg:'linear-gradient(145deg,#1e1c18,#2e2a22)',svg:`<svg width="140" height="140" viewBox="0 0 140 140" fill="none" stroke="rgba(201,170,124,.55)" stroke-width=".8"><path d="M20 36 Q70 108 120 36" stroke-width="1.1"/><path d="M35 52 Q70 112 105 52" stroke-width=".6" stroke-dasharray="2 2"/><polygon points="70,118 76,130 64,130" fill="rgba(201,170,124,.5)" stroke="rgba(201,170,124,.9)" stroke-width=".6"/></svg>`},
-  {name:'Brincos Velvet',cat:'Brincos',price:'R$ 2.190,00',rating:5,desc:'Par de brincos pendente em prata 950 rodinada com pérola cultivada de água doce.',mat:'Prata 950 com banho de ródio. Pérola cultivada 10×14mm.',dim:'Comprimento total: 38mm.',care:'Limpe com pano suave. Guarde em pouch de veludo.',warranty:'Garantia 12 meses.',delivery:'Embalagem premium para presente inclusa.',sizes:null,bg:'linear-gradient(145deg,#1c1a18,#282420)',svg:`<svg width="140" height="140" viewBox="0 0 140 140" fill="none" stroke="rgba(201,170,124,.55)" stroke-width=".8"><circle cx="47" cy="32" r="10"/><line x1="47" y1="42" x2="47" y2="74"/><ellipse cx="47" cy="92" rx="14" ry="22"/><circle cx="93" cy="32" r="10"/><line x1="93" y1="42" x2="93" y2="74"/><ellipse cx="93" cy="92" rx="14" ry="22"/></svg>`},
-  {name:'Pulseira Serenity',cat:'Pulseiras',price:'R$ 7.340,00',rating:4,desc:'Pulseira em ouro amarelo 18k com 18 diamantes laterais em cravação invisible.',mat:'Ouro amarelo 18k (750). 18 diamantes 0,36ct total. VS2/G-H.',dim:'Comprimento: 17cm + regulagem 2cm. Largura: 4mm.',care:'Evite impactos. Leve para polimento anual.',warranty:'24 meses de garantia.',delivery:'Seguro incluso no transporte.',sizes:null,bg:'linear-gradient(145deg,#201e1a,#302c24)',svg:`<svg width="140" height="140" viewBox="0 0 140 140" fill="none" stroke="rgba(201,170,124,.55)" stroke-width=".8"><ellipse cx="70" cy="70" rx="56" ry="20" stroke-dasharray="5 3"/><ellipse cx="70" cy="70" rx="40" ry="14"/><circle cx="126" cy="70" r="8" fill="rgba(201,170,124,.35)" stroke="rgba(201,170,124,.8)" stroke-width=".7"/></svg>`}
-];
-
-const cart={items:[],total:0};
+/* DATA — agora carregado do banco via /api/produtos (gerenciado pelo painel admin) */
+let prods=[];
+const cart={items:[]};
 
 document.querySelectorAll('button,a,[tabindex]').forEach(el=>{
   el.addEventListener('mouseenter',()=>ring.classList.add('hovered'));
@@ -1344,9 +1215,7 @@ window.addEventListener('scroll',()=>{
 },{passive:true});
 
 /* REVEAL */
-new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')})},{threshold:.1,rootMargin:'0px 0px -40px 0px'})
-  .observe.bind(new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')})},{threshold:.1,rootMargin:'0px 0px -40px 0px'}));
-
+let revealObs;
 (()=>{
   const obs=new IntersectionObserver((es)=>{
     es.forEach(e=>{
@@ -1361,6 +1230,7 @@ new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting)e.target.clas
       }
     });
   },{threshold:.12,rootMargin:'0px 0px -40px 0px'});
+  revealObs=obs;
   // rv elements
   document.querySelectorAll('.rv').forEach(el=>obs.observe(el));
   // editorial split
@@ -1370,11 +1240,6 @@ new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting)e.target.clas
   // ig cells stagger
   document.querySelectorAll('.ig-cell').forEach((el,i)=>{
     el.style.transitionDelay=i*.07+'s';
-    obs.observe(el);
-  });
-  // product cards stagger
-  document.querySelectorAll('.pc').forEach((el,i)=>{
-    el.style.transitionDelay=(i%4)*.1+'s';
     obs.observe(el);
   });
   // category cards stagger
@@ -1393,22 +1258,90 @@ document.getElementById('cart-close').addEventListener('click',closeCart);
 cartOv.addEventListener('click',e=>{if(e.target===cartOv)closeCart()});
 function closeCart(){cartOv.classList.remove('open');document.body.style.overflow=''}
 
-function addToCart(name,price){
-  const ex=cart.items.find(i=>i.name===name);
-  if(ex)ex.qty++;else cart.items.push({name,price,qty:1});
+function fmtPrice(n){return 'R$ '+Number(n).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});}
+
+function addToCart(id){
+  const p=prods.find(x=>x.id===id);
+  if(!p)return;
+  const ex=cart.items.find(i=>i.id===id);
+  if(ex)ex.qty++;else cart.items.push({id:p.id,nome:p.nome,preco:Number(p.preco),qty:1});
   updateCart();cartOv.classList.add('open');document.body.style.overflow='hidden';
-  toast(`"${name}" adicionado`);
+  toast(`"${p.nome}" adicionado`);
 }
 function updateCart(){
   const emp=document.getElementById('cart-emp'),items=document.getElementById('cart-items'),ft=document.getElementById('cart-ft'),badge=document.getElementById('cart-badge');
-  const total=cart.items.reduce((s,i)=>s+i.qty,0);
-  badge.textContent=total;
+  const totalQty=cart.items.reduce((s,i)=>s+i.qty,0);
+  badge.textContent=totalQty;
   if(!cart.items.length){emp.style.display='block';items.innerHTML='';ft.style.display='none';return}
   emp.style.display='none';ft.style.display='block';
-  items.innerHTML=cart.items.map((it,i)=>`<div class="cart-item"><div class="ci-img"></div><div class="ci-info"><p class="ci-name">${it.name}</p><p class="ci-var">Jermaine Joias</p><p class="ci-price">${it.price}</p><div class="ci-qty"><button class="qb" onclick="chgQty(${i},-1)">−</button><span class="qn">${it.qty}</span><button class="qb" onclick="chgQty(${i},1)">+</button></div></div></div>`).join('');
-  document.getElementById('cart-total').textContent=cart.items[0].price;
+  items.innerHTML=cart.items.map((it,i)=>`<div class="cart-item"><div class="ci-img"></div><div class="ci-info"><p class="ci-name">${it.nome}</p><p class="ci-var">Jermaine Joias</p><p class="ci-price">${fmtPrice(it.preco)}</p><div class="ci-qty"><button class="qb" onclick="chgQty(${i},-1)">−</button><span class="qn">${it.qty}</span><button class="qb" onclick="chgQty(${i},1)">+</button></div></div></div>`).join('');
+  const totalValor=cart.items.reduce((s,i)=>s+i.qty*i.preco,0);
+  document.getElementById('cart-total').textContent=fmtPrice(totalValor);
 }
 function chgQty(i,d){cart.items[i].qty+=d;if(cart.items[i].qty<=0)cart.items.splice(i,1);updateCart()}
+
+async function checkout(){
+  if(!cart.items.length)return;
+  const btn=document.querySelector('.btn-ck');
+  const itens=cart.items.map(i=>({nome:i.nome,preco:i.preco,qty:i.qty}));
+  const total=cart.items.reduce((s,i)=>s+i.qty*i.preco,0);
+  btn.disabled=true;btn.textContent='Enviando...';
+  try{
+    const res=await fetch('/api/pedidos',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({itens,total})});
+    if(!res.ok)throw new Error();
+    cart.items=[];updateCart();closeCart();
+    toast('Pedido enviado! Em breve entraremos em contato.');
+  }catch(e){
+    toast('Não foi possível enviar o pedido. Tente novamente.');
+  }finally{
+    btn.disabled=false;btn.textContent='Finalizar compra';
+  }
+}
+
+/* PRODUTOS */
+const placeholderSvg=`<svg width="120" height="120" viewBox="0 0 120 120" fill="none" stroke="rgba(201,170,124,.55)" stroke-width=".8"><circle cx="60" cy="60" r="46" stroke-dasharray="5 3"/><circle cx="60" cy="60" r="30"/><circle cx="60" cy="16" r="9" fill="rgba(201,170,124,.4)" stroke="rgba(201,170,124,.9)" stroke-width=".7"/></svg>`;
+function starsHtml(n){n=n||5;return '<span class="star">★</span>'.repeat(n)+'<span class="star" style="color:var(--gl)">★</span>'.repeat(5-n);}
+
+async function loadProdutos(){
+  const grid=document.getElementById('pgrid');
+  try{
+    prods=await fetch('/api/produtos').then(r=>r.json());
+  }catch(e){
+    prods=[];
+  }
+  if(!prods.length){
+    grid.innerHTML='<p style="padding:40px 8px;color:var(--gm)">Em breve novas peças.</p>';
+    return;
+  }
+  grid.innerHTML=prods.map((p,i)=>{
+    const art=p.imagem_url
+      ? `<img src="${p.imagem_url}" alt="${p.nome}" style="width:100%;height:100%;object-fit:cover">`
+      : `<div style="width:100%;height:100%;background:linear-gradient(145deg,#ede8e0 0%,#ddd4c4 35%,#e8e0d0 65%,#f0ece4 100%);display:flex;align-items:center;justify-content:center">${placeholderSvg}</div>`;
+    const precoHtml=p.preco_antigo?`<del>${fmtPrice(p.preco_antigo)}</del> ${fmtPrice(p.preco)}`:fmtPrice(p.preco);
+    const tagHtml=p.tag?`<span class="pc-tag"${p.tag==='Oferta'?' style="background:var(--ch);color:var(--bk)"':''}>${p.tag}</span>`:'';
+    return `<article class="pc rv" role="listitem">
+      <div class="pc-img">
+        <div class="pc-art" style="box-shadow:inset 0 0 80px rgba(201,170,124,.12)">${art}</div>
+        <div class="pc-hover"><button class="pc-quick" onclick="openModal(${i})">Ver detalhes</button></div>
+        ${tagHtml}
+      </div>
+      <div class="pc-info">
+        <div class="pc-stars">${starsHtml(p.avaliacao)}</div>
+        <h3 class="pc-name">${p.nome}</h3>
+        <p class="pc-mat">${p.categoria}</p>
+        <p class="pc-price">${precoHtml}</p>
+      </div>
+      <div class="pc-actions">
+        <button class="pc-cart" onclick="addToCart(${p.id})">Adicionar à sacola</button>
+        <button class="pc-wish" aria-label="Favoritar"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M8 14S1 9.5 1 5a3.5 3.5 0 0 1 7 0 3.5 3.5 0 0 1 7 0c0 4.5-7 9-7 9z"/></svg></button>
+      </div>
+    </article>`;
+  }).join('');
+  document.querySelectorAll('#pgrid .pc').forEach((el,i)=>{
+    el.style.transitionDelay=(i%4)*.1+'s';
+    if(revealObs)revealObs.observe(el);
+  });
+}
 
 /* MODAL */
 const modalOv=document.getElementById('modal-ov');
@@ -1417,8 +1350,13 @@ modalOv.addEventListener('click',e=>{if(e.target===modalOv)closeModal()});
 function closeModal(){modalOv.classList.remove('open');document.body.style.overflow=''}
 function openModal(idx){
   const p=prods[idx];
-  document.getElementById('modal-img').innerHTML=`<div style="width:100%;height:100%;min-height:400px;background:${p.bg};display:flex;align-items:center;justify-content:center">${p.svg}</div>`;
-  document.getElementById('modal-cnt').innerHTML=`<span class="tl">${p.cat}</span><h2 id="mpname" class="m-pname" style="margin-top:8px">${p.name}</h2><p class="m-price">${p.price}</p><div class="m-rating">${'<span class="star">★</span>'.repeat(p.rating)}${'<span class="star" style="color:var(--gl)">★</span>'.repeat(5-p.rating)}<span>(${p.rating*18+6} avaliações)</span></div><p class="m-desc">${p.desc}</p>${p.sizes?`<span class="sz-lab">Tamanho</span><div class="szs">${p.sizes.map((s,i)=>`<button class="sz${i===0?' on':''}" onclick="pickSz(this)">${s}</button>`).join('')}</div>`:''}<div class="m-ctas"><button class="btn-buy" onclick="addToCart('${p.name}','${p.price}')">Comprar agora</button><button class="btn-add" onclick="addToCart('${p.name}','${p.price}')">Adicionar à sacola</button><button class="btn-hrt" aria-label="Favoritar"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M9 15.5S2 11 2 6a4 4 0 0 1 7-2.6A4 4 0 0 1 16 6c0 5-7 9.5-7 9.5z"/></svg></button></div><div class="acc-item on"><button class="acc-trig" onclick="accToggle(this)">Materiais <span class="acc-ico"></span></button><div class="acc-body" style="max-height:200px"><p>${p.mat}</p></div></div><div class="acc-item"><button class="acc-trig" onclick="accToggle(this)">Dimensões <span class="acc-ico"></span></button><div class="acc-body"><p>${p.dim}</p></div></div><div class="acc-item"><button class="acc-trig" onclick="accToggle(this)">Cuidados <span class="acc-ico"></span></button><div class="acc-body"><p>${p.care}</p></div></div><div class="acc-item"><button class="acc-trig" onclick="accToggle(this)">Garantia e Entrega <span class="acc-ico"></span></button><div class="acc-body"><p>${p.warranty} ${p.delivery}</p></div></div>`;
+  if(!p)return;
+  const imgBg=p.imagem_url?`url('${p.imagem_url}') center/cover`:'linear-gradient(145deg,#1a1814,#2c2820)';
+  document.getElementById('modal-img').innerHTML=`<div style="width:100%;height:100%;min-height:400px;background:${imgBg};display:flex;align-items:center;justify-content:center">${p.imagem_url?'':placeholderSvg}</div>`;
+  const rating=p.avaliacao||5;
+  const precoHtml=p.preco_antigo?`<del>${fmtPrice(p.preco_antigo)}</del> ${fmtPrice(p.preco)}`:fmtPrice(p.preco);
+  const tamanhos=(p.tamanhos||'').split(',').map(s=>s.trim()).filter(Boolean);
+  document.getElementById('modal-cnt').innerHTML=`<span class="tl">${p.categoria}</span><h2 id="mpname" class="m-pname" style="margin-top:8px">${p.nome}</h2><p class="m-price">${precoHtml}</p><div class="m-rating">${starsHtml(rating)}<span>(${rating*18+6} avaliações)</span></div><p class="m-desc">${p.descricao||''}</p>${tamanhos.length?`<span class="sz-lab">Tamanho</span><div class="szs">${tamanhos.map((s,i)=>`<button class="sz${i===0?' on':''}" onclick="pickSz(this)">${s}</button>`).join('')}</div>`:''}<div class="m-ctas"><button class="btn-buy" onclick="addToCart(${p.id})">Comprar agora</button><button class="btn-add" onclick="addToCart(${p.id})">Adicionar à sacola</button><button class="btn-hrt" aria-label="Favoritar"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M9 15.5S2 11 2 6a4 4 0 0 1 7-2.6A4 4 0 0 1 16 6c0 5-7 9.5-7 9.5z"/></svg></button></div><div class="acc-item on"><button class="acc-trig" onclick="accToggle(this)">Materiais <span class="acc-ico"></span></button><div class="acc-body" style="max-height:200px"><p>${p.materiais||'—'}</p></div></div><div class="acc-item"><button class="acc-trig" onclick="accToggle(this)">Dimensões <span class="acc-ico"></span></button><div class="acc-body"><p>${p.dimensoes||'—'}</p></div></div><div class="acc-item"><button class="acc-trig" onclick="accToggle(this)">Cuidados <span class="acc-ico"></span></button><div class="acc-body"><p>${p.cuidados||'—'}</p></div></div><div class="acc-item"><button class="acc-trig" onclick="accToggle(this)">Garantia e Entrega <span class="acc-ico"></span></button><div class="acc-body"><p>${[p.garantia,p.entrega].filter(Boolean).join(' ')}</p></div></div>`;
   modalOv.classList.add('open');document.body.style.overflow='hidden';
 }
 function pickSz(btn){btn.closest('.szs').querySelectorAll('.sz').forEach(b=>b.classList.remove('on'));btn.classList.add('on')}
@@ -1508,113 +1446,12 @@ function handleNews(e){e.preventDefault();const v=e.target.querySelector('input'
   });
 })();
 
-/* ADMIN */
-function openAdmin(){
-  const ov=document.getElementById('admin-ov');
-  ov.style.display='flex';
-  setTimeout(()=>document.getElementById('admin-user').focus(),100);
-}
-function closeAdmin(){
-  document.getElementById('admin-ov').style.display='none';
-  document.getElementById('admin-panel').style.display='none';
-  document.getElementById('admin-err').style.display='none';
-  document.getElementById('admin-user').value='';
-  document.getElementById('admin-pass').value='';
-}
-function doLogin(){
-  const u=document.getElementById('admin-user').value;
-  const p=document.getElementById('admin-pass').value;
-  const err=document.getElementById('admin-err');
-  if(u==='admin'&&p==='jermaine2025'){
-    document.getElementById('admin-ov').style.display='none';
-    document.getElementById('admin-panel').style.display='block';
-    err.style.display='none';
-  } else {
-    err.style.display='block';
-    document.getElementById('admin-pass').value='';
-    document.getElementById('admin-pass').focus();
-    document.getElementById('admin-pass').style.borderColor='#c0392b';
-    setTimeout(()=>document.getElementById('admin-pass').style.borderColor='var(--gl)',2000);
-  }
-}
-
 /* TOAST */
 let tt;function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),3000)}
+
+/* INIT */
+loadProdutos();
 </script>
-
-<!-- ADMIN MODAL -->
-<div id="admin-ov" style="display:none;position:fixed;inset:0;background:rgba(10,9,8,.85);z-index:9999;align-items:center;justify-content:center;backdrop-filter:blur(8px)" onclick="if(event.target===this)closeAdmin()">
-  <div style="background:var(--w);width:min(420px,92%);border-radius:16px;overflow:hidden;animation:scaleIn .35s ease">
-    <div style="background:var(--bk);padding:28px 32px;display:flex;align-items:center;gap:14px">
-      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="var(--ch)" stroke-width="1.3"><rect x="4" y="9" width="12" height="9" rx="2"/><path d="M7 9V6a3 3 0 0 1 6 0v3"/><circle cx="10" cy="14" r="1.2" fill="var(--ch)" stroke="none"/></svg>
-      <div>
-        <p style="font-family:var(--serif);font-size:1.05rem;color:var(--w);font-weight:300">Painel Administrativo</p>
-        <p style="font-size:10px;color:rgba(255,255,255,.3);letter-spacing:.1em;text-transform:uppercase;margin-top:2px">Jermaine Joias</p>
-      </div>
-    </div>
-    <div style="padding:32px">
-      <div style="margin-bottom:18px">
-        <label style="font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--gm);display:block;margin-bottom:8px">Usuário</label>
-        <input id="admin-user" type="text" placeholder="admin" style="width:100%;padding:12px 16px;border:1px solid var(--gl);border-radius:8px;font-family:var(--sans);font-size:14px;outline:none;color:var(--bk);background:var(--w);transition:border-color .3s ease" onfocus="this.style.borderColor='var(--ch)'" onblur="this.style.borderColor='var(--gl)'">
-      </div>
-      <div style="margin-bottom:24px">
-        <label style="font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--gm);display:block;margin-bottom:8px">Senha</label>
-        <input id="admin-pass" type="password" placeholder="••••••••" style="width:100%;padding:12px 16px;border:1px solid var(--gl);border-radius:8px;font-family:var(--sans);font-size:14px;outline:none;color:var(--bk);background:var(--w);transition:border-color .3s ease" onfocus="this.style.borderColor='var(--ch)'" onblur="this.style.borderColor='var(--gl)'" onkeydown="if(event.key==='Enter')doLogin()">
-      </div>
-      <div id="admin-err" style="font-size:12px;color:#c0392b;margin-bottom:12px;display:none;text-align:center">Usuário ou senha incorretos.</div>
-      <button onclick="doLogin()" style="width:100%;padding:15px;background:var(--bk);color:var(--w);border:none;border-radius:8px;font-family:var(--sans);font-size:10px;letter-spacing:.18em;text-transform:uppercase;cursor:pointer;transition:background .3s ease" onmouseover="this.style.background='var(--bs)'" onmouseout="this.style.background='var(--bk)'">Entrar</button>
-      <button onclick="closeAdmin()" style="width:100%;padding:12px;background:transparent;color:var(--gm);border:none;font-family:var(--sans);font-size:11px;cursor:pointer;margin-top:8px;transition:color .3s ease" onmouseover="this.style.color='var(--bk)'" onmouseout="this.style.color='var(--gm)'">Cancelar</button>
-    </div>
-  </div>
-</div>
-
-<!-- ADMIN PANEL (pós-login) -->
-<div id="admin-panel" style="display:none;position:fixed;inset:0;background:var(--ow);z-index:9999;overflow-y:auto">
-  <div style="max-width:800px;margin-inline:auto;padding:40px clamp(20px,5vw,60px)">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:40px;padding-bottom:20px;border-bottom:1px solid var(--gl)">
-      <div style="display:flex;align-items:center;gap:12px">
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="var(--ch)" stroke-width="1.3"><rect x="4" y="9" width="12" height="9" rx="2"/><path d="M7 9V6a3 3 0 0 1 6 0v3"/></svg>
-        <span style="font-family:var(--serif);font-size:1.2rem;font-weight:300">Painel Jermaine Joias</span>
-      </div>
-      <button onclick="closeAdmin()" style="padding:10px 20px;border:1px solid var(--gl);border-radius:8px;background:transparent;font-family:var(--sans);font-size:11px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;color:var(--gd);transition:all .3s ease" onmouseover="this.style.borderColor='var(--bk)';this.style.color='var(--bk)'" onmouseout="this.style.borderColor='var(--gl)';this.style.color='var(--gd)'">Sair</button>
-    </div>
-    <!-- Stats -->
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:36px">
-      <div style="background:var(--w);padding:24px;border-radius:12px;border:1px solid var(--gl)">
-        <p style="font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--gm);margin-bottom:8px">Pedidos hoje</p>
-        <p style="font-family:var(--serif);font-size:2rem;font-weight:300;color:var(--bk)">12</p>
-      </div>
-      <div style="background:var(--w);padding:24px;border-radius:12px;border:1px solid var(--gl)">
-        <p style="font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--gm);margin-bottom:8px">Faturamento</p>
-        <p style="font-family:var(--serif);font-size:2rem;font-weight:300;color:var(--bk)">R$48k</p>
-      </div>
-      <div style="background:var(--w);padding:24px;border-radius:12px;border:1px solid var(--gl)">
-        <p style="font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--gm);margin-bottom:8px">Visitantes</p>
-        <p style="font-family:var(--serif);font-size:2rem;font-weight:300;color:var(--bk)">1.2k</p>
-      </div>
-    </div>
-    <!-- Actions -->
-    <p style="font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--gm);margin-bottom:16px">Ações rápidas</p>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-      <button onclick="toast('Função em breve')" style="padding:20px;border:1px solid var(--gl);border-radius:12px;background:var(--w);text-align:left;cursor:pointer;transition:all .3s ease;font-family:var(--sans)" onmouseover="this.style.borderColor='var(--ch)';this.style.background='var(--ow)'" onmouseout="this.style.borderColor='var(--gl)';this.style.background='var(--w)'">
-        <p style="font-size:13px;font-weight:400;color:var(--bk);margin-bottom:4px">Gerenciar Produtos</p>
-        <p style="font-size:11px;color:var(--gm);font-weight:300">Adicionar, editar, remover</p>
-      </button>
-      <button onclick="toast('Função em breve')" style="padding:20px;border:1px solid var(--gl);border-radius:12px;background:var(--w);text-align:left;cursor:pointer;transition:all .3s ease;font-family:var(--sans)" onmouseover="this.style.borderColor='var(--ch)';this.style.background='var(--ow)'" onmouseout="this.style.borderColor='var(--gl)';this.style.background='var(--w)'">
-        <p style="font-size:13px;font-weight:400;color:var(--bk);margin-bottom:4px">Pedidos</p>
-        <p style="font-size:11px;color:var(--gm);font-weight:300">Ver e gerenciar pedidos</p>
-      </button>
-      <button onclick="toast('Função em breve')" style="padding:20px;border:1px solid var(--gl);border-radius:12px;background:var(--w);text-align:left;cursor:pointer;transition:all .3s ease;font-family:var(--sans)" onmouseover="this.style.borderColor='var(--ch)';this.style.background='var(--ow)'" onmouseout="this.style.borderColor='var(--gl)';this.style.background='var(--w)'">
-        <p style="font-size:13px;font-weight:400;color:var(--bk);margin-bottom:4px">Newsletter</p>
-        <p style="font-size:11px;color:var(--gm);font-weight:300">Ver cadastros recebidos</p>
-      </button>
-      <button onclick="toast('Função em breve')" style="padding:20px;border:1px solid var(--gl);border-radius:12px;background:var(--w);text-align:left;cursor:pointer;transition:all .3s ease;font-family:var(--sans)" onmouseover="this.style.borderColor='var(--ch)';this.style.background='var(--ow)'" onmouseout="this.style.borderColor='var(--gl)';this.style.background='var(--w)'">
-        <p style="font-size:13px;font-weight:400;color:var(--bk);margin-bottom:4px">Configurações</p>
-        <p style="font-size:11px;color:var(--gm);font-weight:300">Textos, cores, imagens</p>
-      </button>
-    </div>
-  </div>
-</div>
 
 </body>
 </html>

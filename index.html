@@ -882,7 +882,7 @@ footer{background:var(--ow);border-top:1px solid var(--gl);padding-block:clamp(3
 </footer>
 
 <!-- ADMIN LOGIN -->
-<div id="admin-ov" style="position:fixed;inset:0;background:rgba(14,14,12,.7);z-index:400;display:none;align-items:center;justify-content:center;backdrop-filter:blur(6px)" onclick="if(event.target===this)this.classList.remove('open')">
+<div id="admin-ov" style="position:fixed;inset:0;background:rgba(14,14,12,.7);z-index:400;align-items:center;justify-content:center;backdrop-filter:blur(6px)" onclick="if(event.target===this)this.classList.remove('open')">
   <div style="background:var(--w);width:min(360px,90%);padding:40px 36px;border-radius:12px;position:relative">
     <button onclick="document.getElementById('admin-ov').classList.remove('open')" style="position:absolute;top:16px;right:16px;background:none;border:none;cursor:pointer;color:var(--gm);font-size:18px;line-height:1">×</button>
     <div style="text-align:center;margin-bottom:28px">
@@ -900,19 +900,19 @@ footer{background:var(--ow);border-top:1px solid var(--gl);padding-block:clamp(3
 </div>
 
 <style>
-#admin-ov{display:none}
-#admin-ov.open{display:flex}
+#admin-ov{display:none!important}
+#admin-ov.open{display:flex!important}
 </style>
 
 <script>
 function adminLogin(){
-  const u=document.getElementById('admin-user').value;
+  const u=document.getElementById('admin-user').value.trim();
   const p=document.getElementById('admin-pass').value;
   const err=document.getElementById('admin-err');
   if(u==='joaogabrielsantoshilario05@gmail.com'&&p==='09042010'){
     err.style.display='none';
     document.getElementById('admin-ov').classList.remove('open');
-    toast('Bem-vindo ao painel!');
+    window.location.href='/admin.html';
   } else {
     err.style.display='block';
     document.getElementById('admin-pass').value='';

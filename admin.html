@@ -514,29 +514,39 @@ function handleImagePick(input) {
 
 async function saveProduto() {
   const garantiaEntrega = document.getElementById('pGarantiaEntrega').value.trim();
+  const imagemUrl = document.getElementById('pImagemUrl').value.trim() || null;
+
+  // Bloqueia base64 muito grande (API rejeita payload gigante)
+  if (imagemUrl && imagemUrl.startsWith('data:') && imagemUrl.length > 400000) {
+    showToast('⚠️ Foto muito grande! Use uma imagem menor que 300kb.');
+    return;
+  }
+
   const payload = {
     nome: document.getElementById('pNome').value.trim(),
     categoria: document.getElementById('pCategoria').value,
     preco: parseFloat(document.getElementById('pPreco').value),
     preco_antigo: parseFloat(document.getElementById('pPrecoAntigo').value) || null,
     avaliacao: parseInt(document.getElementById('pAvaliacao').value, 10) || 5,
-    tag: document.getElementById('pTag').value.trim() || null,
-    tamanhos: document.getElementById('pTamanhos').value.trim() || null,
-    imagem_url: document.getElementById('pImagemUrl').value.trim() || null,
+    tag: document.getElementById('pTag').value || null,
+    tamanhos: null,
+    imagem_url: imagemUrl,
     descricao: document.getElementById('pDescricao').value.trim() || null,
     materiais: document.getElementById('pMateriais').value.trim() || null,
     dimensoes: document.getElementById('pDimensoes').value.trim() || null,
-
     garantia: garantiaEntrega || null,
     entrega: null,
     destaque: document.getElementById('pDestaque').checked,
     ativo: document.getElementById('pAtivo').checked,
   };
+
   if (!payload.nome || !payload.categoria || !payload.preco) {
     showToast('⚠️ Preencha nome, categoria e preço.'); return;
   }
+
   const btn = document.querySelector('#produtoForm .btn-primary');
   btn.disabled = true; btn.textContent = '⏳ Salvando...';
+
   try {
     if (editingProdutoId) {
       await api('produtos', { method: 'PUT', body: JSON.stringify({ id: editingProdutoId, ...payload }) });
@@ -548,7 +558,9 @@ async function saveProduto() {
     clearProdutoForm();
     showToast('✅ Peça salva!');
   } catch (e) {
+    console.error('Erro ao salvar:', e);
     showToast('❌ Erro: ' + e.message);
+    alert('Erro ao salvar a peça:\n\n' + e.message);
   } finally {
     btn.disabled = false; btn.textContent = '💾 Salvar peça';
   }
@@ -564,15 +576,19 @@ function editProduto(id) {
   document.getElementById('pPreco').value = p.preco;
   document.getElementById('pPrecoAntigo').value = p.preco_antigo || '';
   document.getElementById('pTag').value = p.tag || '';
-  document.getElementById('pTamanhos').value = p.tamanhos || '';
   document.getElementById('pImagemUrl').value = p.imagem_url || '';
   document.getElementById('pDescricao').value = p.descricao || '';
   document.getElementById('pMateriais').value = p.materiais || '';
   document.getElementById('pDimensoes').value = p.dimensoes || '';
-
   document.getElementById('pGarantiaEntrega').value = [p.garantia, p.entrega].filter(Boolean).join(' ');
   document.getElementById('pDestaque').checked = !!p.destaque;
   document.getElementById('pAtivo').checked = p.ativo !== false;
+  // Mostrar preview da imagem existente
+  if (p.imagem_url) {
+    document.getElementById('pImagemPreviewImg').src = p.imagem_url;
+    document.getElementById('pImagemPreview').style.display = 'block';
+    document.getElementById('pImagemNome').textContent = 'Imagem atual';
+  }
   document.querySelector('#produtoForm .btn-primary').textContent = '💾 Atualizar peça';
   document.getElementById('produtoForm').scrollIntoView({ behavior: 'smooth' });
 }

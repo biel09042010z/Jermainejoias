@@ -506,6 +506,10 @@ footer{background:var(--ow);border-top:1px solid var(--gl);padding-block:clamp(3
   .cat-grid{grid-template-columns:repeat(2,1fr)}
 }
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition-duration:.01ms!important}}
+
+/* Foto real nos cards */
+.pc-photo{width:100%;height:100%;object-fit:cover;transition:transform .7s var(--ease)}
+.pc:hover .pc-photo{transform:scale(1.06)}
 </style>
 </head>
 <body>
@@ -710,11 +714,7 @@ footer{background:var(--ow);border-top:1px solid var(--gl);padding-block:clamp(3
       <h2 id="prod-title" class="tt">Peças em destaque.</h2>
     </div>
   </div>
-  <div class="pgrid con" id="pgrid" role="list" style="border-top:1px solid var(--gl);border-left:1px solid var(--gl)">
-    <!-- Produtos carregados dinamicamente -->
-    <div style="grid-column:1/-1;padding:60px;text-align:center;color:var(--gm)" id="prod-loading">
-      <p style="font-family:var(--serif);font-size:1.1rem">Carregando peças...</p>
-    </div>
+  <div class="pgrid con" id="produtos-grid" role="list" style="border-top:1px solid var(--gl);border-left:1px solid var(--gl)">
   </div>
 </section>
 
@@ -912,102 +912,76 @@ function adminLogin(){
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
-/* PRODUTOS DINÂMICOS */
-let produtos = [];
+/* ══ PRODUTOS DO LOCALSTORAGE ═══════════════════════════ */
+const KEY_PRODS   = 'jj_produtos';
+const KEY_PEDIDOS = 'jj_pedidos';
+let prods = [];
+const cart = {items:[], total:0};
 
-async function loadProdutosSite() {
-  try {
-    const res = await fetch('/api/produtos');
-    const data = await res.json();
-    produtos = Array.isArray(data) ? data : (data.produtos || []);
-    renderProdutos();
-  } catch(e) {
-    document.getElementById('prod-loading').innerHTML =
-      '<p style="font-family:var(--serif);color:var(--gm)">Não foi possível carregar as peças.</p>';
-  }
+function loadProdsFromStorage(){
+  try{ prods = JSON.parse(localStorage.getItem(KEY_PRODS)||'[]'); }
+  catch{ prods=[]; }
+  renderProdGrid();
 }
 
-function formatPreco(val) {
-  return 'R$ ' + parseFloat(val).toLocaleString('pt-BR', {minimumFractionDigits:2});
+function fmtPrice(n){
+  return 'R$ ' + parseFloat(n).toLocaleString('pt-BR',{minimumFractionDigits:2});
 }
 
-function renderProdutos() {
-  const grid = document.getElementById('pgrid');
-  const ativos = produtos.filter(p => p.ativo !== false);
+function renderProdGrid(){
+  const grid = document.getElementById('produtos-grid');
+  if(!grid) return;
+  const ativos = prods.filter(p => p.ativo !== false);
+  const destaques = ativos.filter(p => p.destaque);
+  const lista = destaques.length ? destaques : ativos;
 
-  if (!ativos.length) {
-    grid.innerHTML = '<div style="grid-column:1/-1;padding:60px;text-align:center"><p style="font-family:var(--serif);font-size:1.1rem;color:var(--gm)">Nenhuma peça disponível no momento.</p></div>';
+  if(!lista.length){
+    grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:80px 20px;color:var(--gm)">
+      <p style="font-family:var(--serif);font-size:1.4rem;font-weight:300;margin-bottom:8px">Em breve</p>
+      <p style="font-size:13px">Nossas peças estão sendo preparadas.</p>
+    </div>`;
     return;
   }
 
-  const stars = (n) => {
-    let s = '';
-    for(let i=1;i<=5;i++) s += `<span class="star" style="${i>n?'color:var(--gl)':''}"">★</span>`;
-    return s;
-  };
-
-  grid.innerHTML = ativos.map((p, i) => `
-    <article class="pc rv${i>0?' rv'+(i%4):''}" role="listitem">
+  grid.innerHTML = lista.map((p, idx) => {
+    const priceStr  = fmtPrice(p.preco);
+    const oldPrice  = p.preco_antigo ? fmtPrice(p.preco_antigo) : null;
+    const stars     = '★'.repeat(p.avaliacao||5) + '☆'.repeat(5-(p.avaliacao||5));
+    const imgHtml   = p.imagem_url
+      ? `<img src="${p.imagem_url}" alt="${p.nome}" loading="lazy" style="width:100%;height:100%;object-fit:cover;transition:transform .7s var(--ease)" class="pc-photo">`
+      : `<div style="width:100%;height:100%;background:linear-gradient(145deg,#1a1814,#2c2820);display:flex;align-items:center;justify-content:center">
+           <svg width="64" height="64" viewBox="0 0 64 64" fill="none" stroke="rgba(201,170,124,.3)" stroke-width=".8"><circle cx="32" cy="32" r="26"/><circle cx="32" cy="32" r="16"/></svg>
+         </div>`;
+    return `
+    <article class="pc rv" role="listitem" style="transition-delay:${(idx%4)*.1}s">
       <div class="pc-img">
-        ${p.imagem_url
-          ? `<img src="${p.imagem_url}" alt="${p.nome}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0">`
-          : `<div class="pc-art" style="background:linear-gradient(145deg,#ede8e0 0%,#d4c8b4 35%,#e8e0d4 65%,#ede6da 100%);box-shadow:inset 0 0 80px rgba(201,170,124,.12)"></div>`
-        }
+        <div class="pc-art" style="overflow:hidden">${imgHtml}</div>
         <div class="pc-hover">
-          <button class="pc-quick" onclick="openModalApi(${p.id})">Ver detalhes</button>
+          <button class="pc-quick" onclick="openModal(${idx})">Ver detalhes</button>
         </div>
         ${p.tag ? `<span class="pc-tag">${p.tag}</span>` : ''}
       </div>
       <div class="pc-info">
-        <div class="pc-stars">${stars(p.avaliacao||5)}</div>
+        <div class="pc-stars" aria-label="${p.avaliacao||5} estrelas">${stars.split('').map((s,i)=>
+          `<span class="star" style="${i>=(p.avaliacao||5)?'color:var(--gl)':''}">★</span>`).join('')}
+        </div>
         <h3 class="pc-name">${p.nome}</h3>
-        <p class="pc-mat">${p.materiais ? p.materiais.substring(0,40)+'...' : p.categoria}</p>
-        <p class="pc-price">${p.preco_antigo ? `<del>${formatPreco(p.preco_antigo)}</del> ` : ''}${formatPreco(p.preco)}</p>
+        <p class="pc-mat">${p.categoria}${p.materiais?' · '+p.materiais.split('.')[0]:''}</p>
+        <p class="pc-price">${oldPrice?`<del>${oldPrice}</del> `:''}${priceStr}</p>
       </div>
       <div class="pc-actions">
-        <button class="pc-cart" onclick="addToCart('${p.nome.replace(/'/g,"\\'")}','${formatPreco(p.preco)}','${p.imagem_url||''}')">Adicionar à sacola</button>
+        <button class="pc-cart" onclick="addToCart('${p.nome}','${priceStr}',${p.preco},'${p.imagem_url||''}')">Adicionar à sacola</button>
         <button class="pc-wish" aria-label="Favoritar"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M8 14S1 9.5 1 5a3.5 3.5 0 0 1 7 0 3.5 3.5 0 0 1 7 0c0 4.5-7 9-7 9z"/></svg></button>
       </div>
-    </article>`).join('');
+    </article>`;
+  }).join('');
+
+  // Re-observe novos cards
+  document.querySelectorAll('.pc.rv:not(.in)').forEach((el,i)=>{
+    el.style.transitionDelay=(i%4)*.1+'s';
+    rvObs.observe(el);
+  });
 }
-
-function openModalApi(id) {
-  const p = produtos.find(x => x.id === id);
-  if (!p) return;
-  const stars = (n) => { let s=''; for(let i=1;i<=5;i++) s+=`<span class="star" ${i>n?'style="color:var(--gl)"':''}>★</span>`; return s; };
-  const preco = formatPreco(p.preco);
-  document.getElementById('modal-img').innerHTML = p.imagem_url
-    ? `<img src="${p.imagem_url}" alt="${p.nome}" style="width:100%;height:100%;object-fit:cover">`
-    : `<div style="width:100%;height:100%;background:linear-gradient(145deg,#ede8e0,#d4c8b4)"></div>`;
-  document.getElementById('modal-cnt').innerHTML = `
-    <span class="tl">${p.categoria}</span>
-    <h2 id="mpname" class="m-pname" style="margin-top:8px">${p.nome}</h2>
-    <p class="m-price">${p.preco_antigo?`<del>${formatPreco(p.preco_antigo)}</del> `:''}${preco}</p>
-    <div class="m-rating">${stars(p.avaliacao||5)}</div>
-    ${p.descricao?`<p class="m-desc">${p.descricao}</p>`:''}
-    <div class="m-ctas">
-      <button class="btn-buy" onclick="addToCart('${p.nome.replace(/'/g,"\\'")}','${preco}','${p.imagem_url||''}');closeModal()">Comprar agora</button>
-      <button class="btn-add" onclick="addToCart('${p.nome.replace(/'/g,"\\'")}','${preco}','${p.imagem_url||''}')">Adicionar à sacola</button>
-    </div>
-    ${p.materiais?`<div class="acc-item on"><button class="acc-trig" onclick="accToggle(this)">Materiais <span class="acc-ico"></span></button><div class="acc-body" style="max-height:200px"><p>${p.materiais}</p></div></div>`:''}
-    ${p.dimensoes?`<div class="acc-item"><button class="acc-trig" onclick="accToggle(this)">Dimensões <span class="acc-ico"></span></button><div class="acc-body"><p>${p.dimensoes}</p></div></div>`:''}
-    ${p.garantia?`<div class="acc-item"><button class="acc-trig" onclick="accToggle(this)">Garantia e Entrega <span class="acc-ico"></span></button><div class="acc-body"><p>${p.garantia}</p></div></div>`:''}
-  `;
-  document.getElementById('modal-ov').classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-
-loadProdutosSite();
-
-
-const prods=[
-  {name:'Anel Aurora',cat:'Anéis',price:'R$ 4.890,00',rating:4,desc:'Ouro 18k polido com diamante central lapidação brilhante, delicado e atemporal.',mat:'Ouro 18k (750) com diamante natural 0,25ct certificado GIA.',dim:'Largura do aro: 2mm. Tamanhos: 12–22.',care:'Evite produtos químicos, perfumes e água salgada.',warranty:'Garantia de 12 meses contra defeitos de fabricação.',delivery:'Entrega 2–5 dias úteis. Frete grátis acima de R$ 1.000.',sizes:['12','14','16','18','20','22'],bg:'linear-gradient(145deg,#1a1814,#2c2820)',svg:`<svg width="140" height="140" viewBox="0 0 140 140" fill="none" stroke="rgba(201,170,124,.55)" stroke-width=".8"><circle cx="70" cy="70" r="55" stroke-dasharray="5 3"/><circle cx="70" cy="70" r="36"/><circle cx="70" cy="15" r="11" fill="rgba(201,170,124,.4)" stroke="rgba(201,170,124,.9)" stroke-width=".7"/></svg>`},
-  {name:'Colar Lumière',cat:'Colares',price:'R$ 5.490,00',rating:5,desc:'Ouro rose 18k com corrente veneziana ultrafina e pingente de safira oval.',mat:'Ouro rose 18k (750) com safira natural oval 1,5ct.',dim:'Comprimento: 45cm + extensor 5cm. Pingente: 18×12mm.',care:'Limpe com pano de microfibra seco.',warranty:'Garantia 12 meses.',delivery:'Entrega 2–5 dias úteis.',sizes:null,bg:'linear-gradient(145deg,#1e1c18,#2e2a22)',svg:`<svg width="140" height="140" viewBox="0 0 140 140" fill="none" stroke="rgba(201,170,124,.55)" stroke-width=".8"><path d="M20 36 Q70 108 120 36" stroke-width="1.1"/><path d="M35 52 Q70 112 105 52" stroke-width=".6" stroke-dasharray="2 2"/><polygon points="70,118 76,130 64,130" fill="rgba(201,170,124,.5)" stroke="rgba(201,170,124,.9)" stroke-width=".6"/></svg>`},
-  {name:'Brincos Velvet',cat:'Brincos',price:'R$ 2.190,00',rating:5,desc:'Par de brincos pendente em prata 950 rodinada com pérola cultivada de água doce.',mat:'Prata 950 com banho de ródio. Pérola cultivada 10×14mm.',dim:'Comprimento total: 38mm.',care:'Limpe com pano suave. Guarde em pouch de veludo.',warranty:'Garantia 12 meses.',delivery:'Embalagem premium para presente inclusa.',sizes:null,bg:'linear-gradient(145deg,#1c1a18,#282420)',svg:`<svg width="140" height="140" viewBox="0 0 140 140" fill="none" stroke="rgba(201,170,124,.55)" stroke-width=".8"><circle cx="47" cy="32" r="10"/><line x1="47" y1="42" x2="47" y2="74"/><ellipse cx="47" cy="92" rx="14" ry="22"/><circle cx="93" cy="32" r="10"/><line x1="93" y1="42" x2="93" y2="74"/><ellipse cx="93" cy="92" rx="14" ry="22"/></svg>`},
-  {name:'Pulseira Serenity',cat:'Pulseiras',price:'R$ 7.340,00',rating:4,desc:'Pulseira em ouro amarelo 18k com 18 diamantes laterais em cravação invisible.',mat:'Ouro amarelo 18k (750). 18 diamantes 0,36ct total. VS2/G-H.',dim:'Comprimento: 17cm + regulagem 2cm. Largura: 4mm.',care:'Evite impactos. Leve para polimento anual.',warranty:'24 meses de garantia.',delivery:'Seguro incluso no transporte.',sizes:null,bg:'linear-gradient(145deg,#201e1a,#302c24)',svg:`<svg width="140" height="140" viewBox="0 0 140 140" fill="none" stroke="rgba(201,170,124,.55)" stroke-width=".8"><ellipse cx="70" cy="70" rx="56" ry="20" stroke-dasharray="5 3"/><ellipse cx="70" cy="70" rx="40" ry="14"/><circle cx="126" cy="70" r="8" fill="rgba(201,170,124,.35)" stroke="rgba(201,170,124,.8)" stroke-width=".7"/></svg>`}
-];
-
-const cart={items:[],total:0};
 
 document.querySelectorAll('button,a,[tabindex]').forEach(el=>{
   el.addEventListener('mouseenter',()=>ring.classList.add('hovered'));
@@ -1150,9 +1124,35 @@ document.getElementById('modal-close').addEventListener('click',closeModal);
 modalOv.addEventListener('click',e=>{if(e.target===modalOv)closeModal()});
 function closeModal(){modalOv.classList.remove('open');document.body.style.overflow=''}
 function openModal(idx){
-  const p=prods[idx];
-  document.getElementById('modal-img').innerHTML=`<div style="width:100%;height:100%;min-height:400px;background:${p.bg};display:flex;align-items:center;justify-content:center">${p.svg}</div>`;
-  document.getElementById('modal-cnt').innerHTML=`<span class="tl">${p.cat}</span><h2 id="mpname" class="m-pname" style="margin-top:8px">${p.name}</h2><p class="m-price">${p.price}</p><div class="m-rating">${'<span class="star">★</span>'.repeat(p.rating)}${'<span class="star" style="color:var(--gl)">★</span>'.repeat(5-p.rating)}<span>(${p.rating*18+6} avaliações)</span></div><p class="m-desc">${p.desc}</p>${p.sizes?`<span class="sz-lab">Tamanho</span><div class="szs">${p.sizes.map((s,i)=>`<button class="sz${i===0?' on':''}" onclick="pickSz(this)">${s}</button>`).join('')}</div>`:''}<div class="m-ctas"><button class="btn-buy" onclick="addToCart('${p.name}','${p.price}')">Comprar agora</button><button class="btn-add" onclick="addToCart('${p.name}','${p.price}')">Adicionar à sacola</button><button class="btn-hrt" aria-label="Favoritar"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M9 15.5S2 11 2 6a4 4 0 0 1 7-2.6A4 4 0 0 1 16 6c0 5-7 9.5-7 9.5z"/></svg></button></div><div class="acc-item on"><button class="acc-trig" onclick="accToggle(this)">Materiais <span class="acc-ico"></span></button><div class="acc-body" style="max-height:200px"><p>${p.mat}</p></div></div><div class="acc-item"><button class="acc-trig" onclick="accToggle(this)">Dimensões <span class="acc-ico"></span></button><div class="acc-body"><p>${p.dim}</p></div></div><div class="acc-item"><button class="acc-trig" onclick="accToggle(this)">Cuidados <span class="acc-ico"></span></button><div class="acc-body"><p>${p.care}</p></div></div><div class="acc-item"><button class="acc-trig" onclick="accToggle(this)">Garantia e Entrega <span class="acc-ico"></span></button><div class="acc-body"><p>${p.warranty} ${p.delivery}</p></div></div>`;
+  const lista = prods.filter(p=>p.ativo!==false);
+  const destaques = lista.filter(p=>p.destaque);
+  const src = destaques.length ? destaques : lista;
+  const p = src[idx];
+  if(!p) return;
+  const priceStr = fmtPrice(p.preco);
+  const imgHtml = p.imagem_url
+    ? `<img src="${p.imagem_url}" alt="${p.nome}" style="width:100%;height:100%;object-fit:cover">`
+    : `<div style="width:100%;height:100%;min-height:400px;background:linear-gradient(145deg,#1a1814,#2c2820);display:flex;align-items:center;justify-content:center"><svg width="80" height="80" viewBox="0 0 80 80" fill="none" stroke="rgba(201,170,124,.4)" stroke-width=".8"><circle cx="40" cy="40" r="32"/><circle cx="40" cy="40" r="20"/></svg></div>`;
+  document.getElementById('modal-img').innerHTML=`<div style="width:100%;height:100%;min-height:400px">${imgHtml}</div>`;
+  const szHtml = (p.tamanhos&&p.tamanhos.length)
+    ? `<span class="sz-lab">Tamanho</span><div class="szs">${p.tamanhos.map((s,i)=>`<button class="sz${i===0?' on':''}" onclick="pickSz(this)">${s}</button>`).join('')}</div>` : '';
+  const stars5 = '<span class="star">★</span>'.repeat(p.avaliacao||5)+'<span class="star" style="color:var(--gl)">★</span>'.repeat(5-(p.avaliacao||5));
+  document.getElementById('modal-cnt').innerHTML=
+    `<span class="tl">${p.categoria}</span>
+     <h2 id="mpname" class="m-pname" style="margin-top:8px">${p.nome}</h2>
+     <p class="m-price">${p.preco_antigo?`<del>${fmtPrice(p.preco_antigo)}</del> `:''}${priceStr}</p>
+     <div class="m-rating">${stars5}<span>(${(p.avaliacao||5)*18+6} avaliações)</span></div>
+     <p class="m-desc">${p.descricao||''}</p>
+     ${szHtml}
+     <div class="m-ctas">
+       <button class="btn-buy" onclick="addToCart('${p.nome}','${priceStr}',${p.preco},'${p.imagem_url||''}')">Comprar agora</button>
+       <button class="btn-add" onclick="addToCart('${p.nome}','${priceStr}',${p.preco},'${p.imagem_url||''}')">Adicionar à sacola</button>
+       <button class="btn-hrt" aria-label="Favoritar"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M9 15.5S2 11 2 6a4 4 0 0 1 7-2.6A4 4 0 0 1 16 6c0 5-7 9.5-7 9.5z"/></svg></button>
+     </div>
+     ${p.materiais?`<div class="acc-item on"><button class="acc-trig" onclick="accToggle(this)">Materiais <span class="acc-ico"></span></button><div class="acc-body" style="max-height:200px"><p>${p.materiais}</p></div></div>`:''}
+     ${p.dimensoes?`<div class="acc-item"><button class="acc-trig" onclick="accToggle(this)">Dimensões <span class="acc-ico"></span></button><div class="acc-body"><p>${p.dimensoes}</p></div></div>`:''}
+     ${p.cuidados?`<div class="acc-item"><button class="acc-trig" onclick="accToggle(this)">Cuidados <span class="acc-ico"></span></button><div class="acc-body"><p>${p.cuidados}</p></div></div>`:''}
+     ${p.garantia?`<div class="acc-item"><button class="acc-trig" onclick="accToggle(this)">Garantia e Entrega <span class="acc-ico"></span></button><div class="acc-body"><p>${p.garantia}</p></div></div>`:''}`;
   modalOv.classList.add('open');document.body.style.overflow='hidden';
 }
 function pickSz(btn){btn.closest('.szs').querySelectorAll('.sz').forEach(b=>b.classList.remove('on'));btn.classList.add('on')}

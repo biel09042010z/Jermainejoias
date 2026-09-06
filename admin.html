@@ -307,15 +307,30 @@
         </div>
         <div>
           <label class="form-label">Selo (opcional)</label>
-          <input class="form-input" id="pTag" placeholder="Bestseller, Oferta, Novo..." />
-        </div>
-        <div>
-          <label class="form-label">Tamanhos (separe por vírgula)</label>
-          <input class="form-input" id="pTamanhos" placeholder="12, 14, 16, 18, 20, 22" />
+          <select class="form-select" id="pTag">
+            <option value="">Nenhum</option>
+            <option value="Bestseller">Bestseller</option>
+            <option value="Novo">Novo</option>
+            <option value="Oferta">Oferta</option>
+            <option value="Exclusivo">Exclusivo</option>
+            <option value="Lançamento">Lançamento</option>
+            <option value="Edição Limitada">Edição Limitada</option>
+          </select>
         </div>
         <div class="full">
-          <label class="form-label">URL da foto</label>
-          <input class="form-input" id="pImagemUrl" placeholder="https://..." />
+          <label class="form-label">Foto do produto</label>
+          <input type="file" id="pImagemFile" accept="image/*" style="display:none" onchange="handleImagePick(this)" />
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+            <button type="button" class="btn-primary" style="gap:8px" onclick="document.getElementById('pImagemFile').click()">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="1" y="3" width="14" height="10" rx="2"/><circle cx="5.5" cy="7.5" r="1.5"/><path d="M1 11l4-4 3 3 2-2 5 5"/></svg>
+              Escolher da galeria
+            </button>
+            <span id="pImagemNome" style="font-size:.8rem;color:var(--muted)">Nenhuma foto selecionada</span>
+          </div>
+          <input type="hidden" id="pImagemUrl" />
+          <div id="pImagemPreview" style="margin-top:10px;display:none">
+            <img id="pImagemPreviewImg" style="width:100%;max-height:200px;object-fit:cover;border-radius:8px;border:1px solid var(--border)" />
+          </div>
         </div>
         <div class="full">
           <label class="form-label">Descrição curta</label>
@@ -329,10 +344,7 @@
           <label class="form-label">Dimensões</label>
           <textarea class="form-textarea" id="pDimensoes" placeholder="Largura do aro: 2mm."></textarea>
         </div>
-        <div>
-          <label class="form-label">Cuidados</label>
-          <textarea class="form-textarea" id="pCuidados" placeholder="Evite produtos químicos, perfumes e água salgada."></textarea>
-        </div>
+
         <div>
           <label class="form-label">Garantia e entrega</label>
           <textarea class="form-textarea" id="pGarantiaEntrega" placeholder="Garantia 12 meses. Entrega 2–5 dias úteis."></textarea>
@@ -487,6 +499,19 @@ function renderProdutosTable() {
   `).join('');
 }
 
+function handleImagePick(input) {
+  const file = input.files[0];
+  if (!file) return;
+  document.getElementById('pImagemNome').textContent = file.name;
+  const reader = new FileReader();
+  reader.onload = e => {
+    document.getElementById('pImagemUrl').value = e.target.result;
+    document.getElementById('pImagemPreviewImg').src = e.target.result;
+    document.getElementById('pImagemPreview').style.display = 'block';
+  };
+  reader.readAsDataURL(file);
+}
+
 async function saveProduto() {
   const garantiaEntrega = document.getElementById('pGarantiaEntrega').value.trim();
   const payload = {
@@ -501,7 +526,7 @@ async function saveProduto() {
     descricao: document.getElementById('pDescricao').value.trim() || null,
     materiais: document.getElementById('pMateriais').value.trim() || null,
     dimensoes: document.getElementById('pDimensoes').value.trim() || null,
-    cuidados: document.getElementById('pCuidados').value.trim() || null,
+
     garantia: garantiaEntrega || null,
     entrega: null,
     destaque: document.getElementById('pDestaque').checked,
@@ -544,7 +569,7 @@ function editProduto(id) {
   document.getElementById('pDescricao').value = p.descricao || '';
   document.getElementById('pMateriais').value = p.materiais || '';
   document.getElementById('pDimensoes').value = p.dimensoes || '';
-  document.getElementById('pCuidados').value = p.cuidados || '';
+
   document.getElementById('pGarantiaEntrega').value = [p.garantia, p.entrega].filter(Boolean).join(' ');
   document.getElementById('pDestaque').checked = !!p.destaque;
   document.getElementById('pAtivo').checked = p.ativo !== false;
@@ -564,7 +589,11 @@ async function deleteProduto(id) {
 
 function clearProdutoForm() {
   editingProdutoId = null;
-  ['pNome','pPreco','pPrecoAntigo','pTag','pTamanhos','pImagemUrl','pDescricao','pMateriais','pDimensoes','pCuidados','pGarantiaEntrega'].forEach(id => document.getElementById(id).value = '');
+  ['pNome','pPreco','pPrecoAntigo','pImagemUrl','pDescricao','pMateriais','pDimensoes','pGarantiaEntrega'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('pTag').value = '';
+  document.getElementById('pImagemFile').value = '';
+  document.getElementById('pImagemNome').textContent = 'Nenhuma foto selecionada';
+  document.getElementById('pImagemPreview').style.display = 'none';
   document.getElementById('pCategoria').value = '';
   document.getElementById('pAvaliacao').value = '5';
   document.getElementById('pDestaque').checked = false;
